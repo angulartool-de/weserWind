@@ -1,5 +1,5 @@
 import { fetchStationWind } from '../../src/windApp/api';
-import { beaufortDisplay } from '../../src/windApp/beaufort';
+import { beaufortDisplay, beaufortStepBoundariesMs, formatBeaufortBoundaryMs } from '../../src/windApp/beaufort';
 import { renderHistoryChart } from '../../src/windApp/history-chart';
 import { speedRangeLastMinutes } from '../../src/windApp/speed-range';
 import { STATIONS } from '../../src/windApp/stations';
@@ -114,6 +114,7 @@ function beaufortBlock(speedMs: number): string {
   const { bft, label, progressPct } = beaufortDisplay(speedMs);
   const prev = Math.max(0, bft - 1);
   const next = Math.min(12, bft + 1);
+  const { lowerMs, upperMs } = beaufortStepBoundariesMs(bft);
   const pct = Math.round(progressPct);
   const aria = `Beaufort ${bft}, ${pct} Prozent innerhalb der Stufe`;
 
@@ -126,9 +127,15 @@ function beaufortBlock(speedMs: number): string {
           <div class="beaufort-bar__marker" style="left: ${progressPct.toFixed(1)}%"></div>
         </div>
         <div class="beaufort-bar__labels">
-          <span>Bft ${prev}</span>
+          <span class="beaufort-bar__label-end">
+            <span class="beaufort-bar__label-line">Bft ${prev}</span>
+            <span class="beaufort-bar__label-line">${formatBeaufortBoundaryMs(lowerMs)}</span>
+          </span>
           <span class="beaufort-bar__current">Bft ${bft}</span>
-          <span>Bft ${next}</span>
+          <span class="beaufort-bar__label-end beaufort-bar__label-end--right">
+            <span class="beaufort-bar__label-line">Bft ${next}</span>
+            <span class="beaufort-bar__label-line">${formatBeaufortBoundaryMs(upperMs)}</span>
+          </span>
         </div>
       </div>
     </div>

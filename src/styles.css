@@ -296,9 +296,25 @@ main {
 .beaufort-bar__labels {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   margin-top: 0.35rem;
   font-size: 0.6875rem;
   color: var(--color-text-muted);
+}
+
+.beaufort-bar__label-end {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  line-height: 1.2;
+}
+
+.beaufort-bar__label-end--right {
+  text-align: right;
+}
+
+.beaufort-bar__label-line {
+  display: block;
 }
 
 .beaufort-bar__current {
