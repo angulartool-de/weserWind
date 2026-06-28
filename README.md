@@ -1,8 +1,8 @@
 # Weser-Wind – Standalone (mydevweb.de)
 
-Eigenständige Mini-Webseite für Windstärke und -richtung an fünf Weser-Pegeln.
+Reine HTML/JS-Webseite (kein Angular) für Windstärke und -richtung an fünf Weser-Pegeln.
 
-## Build
+## Build & Deploy
 
 ```bash
 cd mydevweb.de
@@ -10,7 +10,18 @@ npm install
 npm run build
 ```
 
-Erzeugt `index.html` und gehashte Dateien unter `assets/` (Deploy-Artefakte). Vor dem Build wird `index.dev.html` als Vite-Eingabe verwendet.
+Ergebnis liegt in **`dist/`** — nur diese Dateien auf den Webserver legen:
+
+```
+dist/
+  index.html
+  favicon.ico
+  assets/
+    index-*.js
+    index-*.css
+```
+
+Lokal testen: `npm run preview` (serviert `dist/`).
 
 ## Entwicklung
 
@@ -18,14 +29,15 @@ Erzeugt `index.html` und gehashte Dateien unter `assets/` (Deploy-Artefakte). Vo
 npm run dev
 ```
 
+## Quellen
 
 | Pfad | Inhalt |
 |---|---|
 | `src/main.ts` | UI-Rendering, Auto-Refresh, Stale-Fallback |
 | `src/styles.css` | Styles |
-| `index.source.html` | Vite-Eingabe (Dev + Build) |
-| `../src/windApp/` | Gemeinsame Domänenlogik mit Angular-Route |
+| `index.dev.html` | HTML-Vorlage (wird für Dev/Build nach `index.html` kopiert) |
+| `../src/windApp/` | Gemeinsame Domänenlogik mit Angular-Route `/weser-wind` |
 
 ## Verhalten (Stale-Fallback)
 
-Wie die Angular-Route `/weser-wind`: Bei API-Fehlern bleiben zuletzt geladene Werte sichtbar (Badge „Stand veraltet“). Fehlt nur der 2‑Stunden-Verlauf: Badge „Verlauf nicht aktualisiert“.
+Bei API-Fehlern bleiben zuletzt geladene Werte sichtbar (Badge „Stand veraltet“). Fehlt nur der 2‑Stunden-Verlauf: Badge „Verlauf nicht aktualisiert“.

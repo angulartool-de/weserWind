@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node -e \"require('fs').copyFileSync('index.dev.html','index.html')\"",
+    "predev": "node scripts/prepare-dev.mjs",
     "dev": "vite",
-    "build": "node -e \"require('fs').copyFileSync('index.dev.html','index.html')\" && vite build && node scripts/sync-deploy.mjs",
+    "build": "node scripts/prepare-dev.mjs && vite build && node scripts/clean-dist.mjs",
     "preview": "vite preview"
   },
   "devDependencies": {
