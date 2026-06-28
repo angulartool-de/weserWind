@@ -1,0 +1,15 @@
+{
+  "name": "weser-wind-standalone",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node -e \"require('fs').copyFileSync('index.dev.html','index.html')\"",
+    "dev": "vite",
+    "build": "node -e \"require('fs').copyFileSync('index.dev.html','index.html')\" && vite build && node scripts/sync-deploy.mjs",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2",
+    "vite": "^7.1.5"
+  }
+}
