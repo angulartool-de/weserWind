@@ -222,6 +222,33 @@ main {
   font-weight: 700;
 }
 
+.wind-speed-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.wind-speed-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.wind-speed-range__line {
+  margin: 0;
+  line-height: 1.3;
+}
+
+.wind-speed-range__period {
+  margin: 0.1rem 0 0;
+  font-size: 0.6875rem;
+  opacity: 0.85;
+}
+
 .wind-beaufort {
   margin: 0 0 0.35rem;
   font-size: 0.9375rem;

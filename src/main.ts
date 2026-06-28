@@ -1,8 +1,10 @@
 import { fetchStationWind } from '../../src/windApp/api';
 import { beaufortDisplay } from '../../src/windApp/beaufort';
 import { renderHistoryChart } from '../../src/windApp/history-chart';
+import { speedRangeLastMinutes } from '../../src/windApp/speed-range';
 import { STATIONS } from '../../src/windApp/stations';
 import type {
+  HistoryPoint,
   StationConfig,
   StationDisplay,
   StationLoadState,
@@ -70,6 +72,44 @@ function windArrowSvg(degrees: number): string {
   `;
 }
 
+function formatSpeedShort(ms: number): string {
+  return ms.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
+function speedRangeBlock(min: number, max: number): string {
+  return `
+    <div class="wind-speed-range" aria-hidden="true">
+      <p class="wind-speed-range__line">Max ${formatSpeedShort(max)} m/s</p>
+      <p class="wind-speed-range__line">Min ${formatSpeedShort(min)} m/s</p>
+      <p class="wind-speed-range__period">10 min</p>
+    </div>
+  `;
+}
+
+function speedBlock(
+  speedMs: number,
+  history: HistoryPoint[],
+  referenceIso: string | null,
+): string {
+  const range = speedRangeLastMinutes(history, 10, referenceIso);
+  const rangeHtml =
+    range.min !== null && range.max !== null
+      ? speedRangeBlock(range.min, range.max)
+      : '';
+  const rangeAria =
+    range.min !== null && range.max !== null
+      ? `, Maximum ${formatSpeedShort(range.max)}, Minimum ${formatSpeedShort(range.min)} in den letzten 10 Minuten`
+      : '';
+
+  return `
+    <div class="wind-speed-row" aria-label="Windgeschwindigkeit: aktuell ${formatSpeedShort(speedMs)}${rangeAria}">
+      <p class="wind-speed">${formatSpeed(speedMs)}</p>
+      ${rangeHtml}
+    </div>
+    ${beaufortBlock(speedMs)}
+  `;
+}
+
 function beaufortBlock(speedMs: number): string {
   const { bft, label, progressPct } = beaufortDisplay(speedMs);
   const prev = Math.max(0, bft - 1);
@@ -113,9 +153,9 @@ function renderCardBody(state: StationLoadState): string {
   }
 
   const { data, km, history } = state;
-  const speedBlock =
+  const speedBlockHtml =
     data.speedMs !== null
-      ? `<p class="wind-speed">${formatSpeed(data.speedMs)}</p>${beaufortBlock(data.speedMs)}`
+      ? speedBlock(data.speedMs, history, data.timestamp)
       : '<p class="wind-speed wind-speed--missing">Keine Geschwindigkeitsmessung</p>';
 
   const directionBlock =
@@ -135,7 +175,7 @@ function renderCardBody(state: StationLoadState): string {
   return `
     <div class="card-body">
       ${directionBlock}
-      ${speedBlock}
+      ${speedBlockHtml}
       ${timestampBlock}
     </div>
     ${renderHistoryChart(history)}
